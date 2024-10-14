@@ -12,22 +12,21 @@ class KakaoPlaceSearchClient(
 
     companion object {
         private const val FORMAT = "json"
-        private const val SIZE = "10"
     }
 
-    fun search(keyword: String): KakaoPlaceSearchResponse? {
+    fun search(keyword: String, size: Int): KakaoPlaceSearchResponse? {
         val params: MultiValueMap<String, String> = LinkedMultiValueMap()
         params.add("query", keyword)
-        params.add("size", SIZE)
+        params.add("size", size.toString())
 
         return try {
             client.getForObject(
-                path = "/local/search/keyword.${FORMAT}",
+                path = "/local/search/keyword.$FORMAT",
                 returnType = KakaoPlaceSearchResponse::class.java,
                 queryParams = params,
             )
         } catch (ex: WebClientResponseException) {
-            if(ex.statusCode.is5xxServerError) {
+            if (ex.statusCode.is5xxServerError) {
                 println("Kakao API 서버에서 에러가 발생했습니다.")
             }
             null
