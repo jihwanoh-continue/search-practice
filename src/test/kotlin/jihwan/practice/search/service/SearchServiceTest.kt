@@ -18,6 +18,7 @@ import org.mockito.BDDMockito.given
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
+import org.springframework.context.ApplicationEventPublisher
 
 @ExtendWith(MockitoExtension::class)
 class SearchServiceTest {
@@ -27,6 +28,9 @@ class SearchServiceTest {
 
     @Mock
     private lateinit var naverPlaceSearchClient: NaverPlaceSearchClient
+
+    @Mock
+    private lateinit var eventPublisher: ApplicationEventPublisher
 
     @InjectMocks
     private lateinit var sut: SearchService

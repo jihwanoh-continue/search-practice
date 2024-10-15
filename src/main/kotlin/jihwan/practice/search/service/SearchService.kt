@@ -3,15 +3,18 @@ package jihwan.practice.search.service
 import jihwan.practice.search.client.KakaoPlaceSearchClient
 import jihwan.practice.search.client.NaverPlaceSearchClient
 import jihwan.practice.search.configuration.exception.ExternalServerException
+import jihwan.practice.search.listener.KeywordCollectEvent
 import jihwan.practice.search.service.dto.Place
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 
 @Service
 class SearchService(
     private val kakaoPlaceSearchClient: KakaoPlaceSearchClient,
     private val naverPlaceSearchClient: NaverPlaceSearchClient,
+    private val eventPublisher: ApplicationEventPublisher,
 ) {
     private val searchSize = 10
 
@@ -30,6 +33,8 @@ class SearchService(
             kakaoPlaces = kakaoResponse?.documents?.map { Place.of(it) } ?: emptyList(),
             naverPlaces = naverResponse?.items?.map { Place.of(it) } ?: emptyList(),
         )
+    }.also {
+        eventPublisher.publishEvent(KeywordCollectEvent(keyword))
     }
 
     private fun mergePlaces(kakaoPlaces: List<Place>, naverPlaces: List<Place>): List<Place> {

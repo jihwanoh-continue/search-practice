@@ -1,13 +1,16 @@
 package jihwan.practice.search.listener
 
+import jihwan.practice.search.service.KeywordCollectService
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
 
 @Component
-class KeywordCollectListener {
+class KeywordCollectListener(
+    private val keywordCollectService: KeywordCollectService
+) {
     @EventListener
     fun collect(event: KeywordCollectEvent) {
-        println("키워드 수집 이벤트 발생 ${event.keyword}")
+        keywordCollectService.incrementCount(event.keyword)
     }
 }
 
