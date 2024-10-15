@@ -1,7 +1,9 @@
 package jihwan.practice.search.service
 
 import jihwan.practice.search.client.KakaoPlaceSearchClient
+import jihwan.practice.search.client.KakaoPlaceSearchResponse
 import jihwan.practice.search.client.NaverPlaceSearchClient
+import jihwan.practice.search.client.NaverPlaceSearchResponse
 import jihwan.practice.search.configuration.exception.ExternalServerException
 import jihwan.practice.search.listener.KeywordCollectEvent
 import jihwan.practice.search.service.dto.Keyword
@@ -19,6 +21,7 @@ class SearchService(
     private val eventPublisher: ApplicationEventPublisher,
 ) {
     private val searchSize = 10
+    private val searchLimitPerProvider = 5
 
     suspend fun search(keyword: String): List<Place> = coroutineScope {
         val kakaoDeferred = async { kakaoPlaceSearchClient.search(keyword, size = searchSize) }
@@ -31,12 +34,35 @@ class SearchService(
             throw ExternalServerException()
         }
 
+<<<<<<< HEAD
         mergePlaces(
             kakaoPlaces = kakaoResponse?.documents?.map { Place.of(it) } ?: emptyList(),
             naverPlaces = naverResponse?.items?.map { Place.of(it) } ?: emptyList(),
         )
     }.also {
         eventPublisher.publishEvent(KeywordCollectEvent(keyword))
+=======
+        val (kakaoPlaces, naverPlaces) = getPlaces(kakaoResponse, naverResponse)
+
+        mergePlaces(kakaoPlaces = kakaoPlaces, naverPlaces = naverPlaces)
+    }
+
+    private fun getPlaces(kakaoResponse: KakaoPlaceSearchResponse?, naverResponse: NaverPlaceSearchResponse?): Pair<List<Place>, List<Place>> {
+        var kakaoPlaces = kakaoResponse?.documents?.map { Place.of(it) } ?: emptyList()
+        var naverPlaces = naverResponse?.items?.map { Place.of(it) } ?: emptyList()
+
+        if (naverPlaces.size <= searchLimitPerProvider) {
+            kakaoPlaces = kakaoPlaces.take(searchSize - naverPlaces.size)
+            naverPlaces = naverPlaces.take(searchLimitPerProvider)
+        }
+
+        if (kakaoPlaces.size <= searchLimitPerProvider) {
+            naverPlaces = naverPlaces.take(searchSize - kakaoPlaces.size)
+            kakaoPlaces = kakaoPlaces.take(searchLimitPerProvider)
+        }
+
+        return Pair(kakaoPlaces, naverPlaces)
+>>>>>>> ce6aa1c (feat: Place를 가져오는 로직 개선)
     }
 
     private fun mergePlaces(kakaoPlaces: List<Place>, naverPlaces: List<Place>): List<Place> {
