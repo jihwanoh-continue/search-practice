@@ -4,6 +4,7 @@ import jihwan.practice.search.client.KakaoPlaceSearchClient
 import jihwan.practice.search.client.NaverPlaceSearchClient
 import jihwan.practice.search.configuration.exception.ExternalServerException
 import jihwan.practice.search.listener.KeywordCollectEvent
+import jihwan.practice.search.service.dto.Keyword
 import jihwan.practice.search.service.dto.Place
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service
 class SearchService(
     private val kakaoPlaceSearchClient: KakaoPlaceSearchClient,
     private val naverPlaceSearchClient: NaverPlaceSearchClient,
+    private val keywordCollectService: KeywordCollectService,
     private val eventPublisher: ApplicationEventPublisher,
 ) {
     private val searchSize = 10
@@ -43,5 +45,11 @@ class SearchService(
         val onlyNaver = naverPlaces - kakaoPlaces.toSet()
 
         return (common + onlyKakao + onlyNaver).take(searchSize)
+    }
+
+    fun getTopKeywords(size: Int = 10): List<Keyword> {
+        val topKeywords = keywordCollectService.getTopKeywords(size)
+        return topKeywords.map { Keyword(it.first, it.second) }
+            .sortedByDescending { it.count }
     }
 }
