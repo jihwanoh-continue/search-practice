@@ -2,6 +2,7 @@ package jihwan.practice.search.client
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import jihwan.practice.search.configuration.client.ApiClient
+import jihwan.practice.search.util.log.logger
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
 import org.springframework.web.reactive.function.client.WebClientResponseException
@@ -13,6 +14,8 @@ class KakaoPlaceSearchClient(
     companion object {
         private const val FORMAT = "json"
     }
+
+    private val logger = logger<KakaoPlaceSearchResponse>()
 
     fun search(keyword: String, size: Int): KakaoPlaceSearchResponse? {
         val params: MultiValueMap<String, String> = LinkedMultiValueMap()
@@ -27,7 +30,7 @@ class KakaoPlaceSearchClient(
             )
         } catch (ex: WebClientResponseException) {
             if (ex.statusCode.is5xxServerError) {
-                println("Kakao API 서버에서 에러가 발생했습니다.")
+                logger.error("Kakao Place Search API 서버 오류", ex)
             }
             null
         }

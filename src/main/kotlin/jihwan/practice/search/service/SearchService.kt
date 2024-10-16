@@ -5,15 +5,20 @@ import jihwan.practice.search.client.KakaoPlaceSearchResponse
 import jihwan.practice.search.client.NaverPlaceSearchClient
 import jihwan.practice.search.client.NaverPlaceSearchResponse
 import jihwan.practice.search.configuration.exception.ExternalServerException
+import jihwan.practice.search.listener.KeywordCollectEvent
+import jihwan.practice.search.service.dto.Keyword
 import jihwan.practice.search.service.dto.Place
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 
 @Service
 class SearchService(
     private val kakaoPlaceSearchClient: KakaoPlaceSearchClient,
     private val naverPlaceSearchClient: NaverPlaceSearchClient,
+    private val keywordCollectService: KeywordCollectService,
+    private val eventPublisher: ApplicationEventPublisher,
 ) {
     private val searchSize = 10
     private val searchLimitPerProvider = 5
@@ -32,6 +37,8 @@ class SearchService(
         val (kakaoPlaces, naverPlaces) = getPlaces(kakaoResponse, naverResponse)
 
         mergePlaces(kakaoPlaces = kakaoPlaces, naverPlaces = naverPlaces)
+    }.also {
+        eventPublisher.publishEvent(KeywordCollectEvent(keyword))
     }
 
     private fun getPlaces(kakaoResponse: KakaoPlaceSearchResponse?, naverResponse: NaverPlaceSearchResponse?): Pair<List<Place>, List<Place>> {
@@ -57,5 +64,11 @@ class SearchService(
         val onlyNaver = naverPlaces - kakaoPlaces.toSet()
 
         return (common + onlyKakao + onlyNaver).take(searchSize)
+    }
+
+    fun getTopKeywords(size: Int = 10): List<Keyword> {
+        val topKeywords = keywordCollectService.getTopKeywords(size)
+        return topKeywords.map { Keyword(it.first, it.second) }
+            .sortedByDescending { it.count }
     }
 }

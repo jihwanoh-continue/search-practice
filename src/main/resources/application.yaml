@@ -2,16 +2,21 @@ spring:
   application:
     name: search
 
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
 client:
   kakao-place-search:
     url: https://dapi.kakao.com/v2
     timeout: 3000
-    api-key: {your-api-key}
+    api-key: { your-api-key }
   naver-place-search:
     url: https://openapi.naver.com/v1
     timeout: 3000
-    client-id: {your-client-id}
-    client-secret: {your-client-secret}
+    client-id: { your-client-id }
+    client-secret: { your-client-secret }
 
 springdoc:
   api-docs:

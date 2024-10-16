@@ -30,6 +30,9 @@ class SearchServiceTest {
     private lateinit var naverPlaceSearchClient: NaverPlaceSearchClient
 
     @Mock
+    private lateinit var keywordCollectService: KeywordCollectService
+
+    @Mock
     private lateinit var eventPublisher: ApplicationEventPublisher
 
     @InjectMocks
