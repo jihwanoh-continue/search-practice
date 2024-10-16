@@ -1,0 +1,5 @@
+### 카카오 로컬 API - 키워드로 장소 검색하기
+GET https://dapi.kakao.com/v2/local/search/keyword.json
+    ?query=타코튜즈데이
+Content-Type: application/json
+Authorization: KakaoAK {REST_API_KEY}

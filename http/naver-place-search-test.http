@@ -1,0 +1,12 @@
+### 예시 요청 (변수 사용)
+GET https://openapi.naver.com/v1/search/local.json?query={{query}}&display={{display}}&start={{start}}&sort={{sort}}
+X-Naver-Client-Id: {{client_id}}
+X-Naver-Client-Secret: {{client_secret}}
+
+### 변수 설정
+@query = 카카오프렌즈
+@display = 10
+@start = 1
+@sort = comment
+@client_id = {your_client_id}
+@client_secret = {your_client_secret}
