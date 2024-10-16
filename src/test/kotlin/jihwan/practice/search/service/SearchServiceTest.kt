@@ -30,6 +30,9 @@ class SearchServiceTest {
     private lateinit var naverPlaceSearchClient: NaverPlaceSearchClient
 
     @Mock
+    private lateinit var keywordCollectService: KeywordCollectService
+
+    @Mock
     private lateinit var eventPublisher: ApplicationEventPublisher
 
     @InjectMocks
@@ -141,10 +144,6 @@ class SearchServiceTest {
             given(naverPlaceSearchClient.search(keyword, searchSize)).willReturn(null)
 
             assertThrows<ExternalServerException> { runBlocking { sut.search(keyword) } }
-        }
-
-        @Test
-        fun `카카오 결과가 5개 초과하더라도 네이버가 존재하는 경우 5개씩 넣는다`() {
         }
     }
 }
