@@ -30,12 +30,9 @@ class SearchServiceTest {
     private lateinit var naverPlaceSearchClient: NaverPlaceSearchClient
 
     @Mock
-<<<<<<< HEAD
     private lateinit var keywordCollectService: KeywordCollectService
 
     @Mock
-=======
->>>>>>> ce6aa1c (feat: Place를 가져오는 로직 개선)
     private lateinit var eventPublisher: ApplicationEventPublisher
 
     @InjectMocks
@@ -148,8 +145,6 @@ class SearchServiceTest {
 
             assertThrows<ExternalServerException> { runBlocking { sut.search(keyword) } }
         }
-<<<<<<< HEAD
-=======
 
         @Test
         fun `카카오 결과가 5개 초과하더라도 네이버가 존재하는 경우 5개씩 넣는다`() {
@@ -171,6 +166,5 @@ class SearchServiceTest {
                 }
             }
         }
->>>>>>> ce6aa1c (feat: Place를 가져오는 로직 개선)
     }
 }

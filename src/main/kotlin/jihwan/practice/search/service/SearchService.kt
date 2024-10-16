@@ -34,17 +34,11 @@ class SearchService(
             throw ExternalServerException()
         }
 
-<<<<<<< HEAD
-        mergePlaces(
-            kakaoPlaces = kakaoResponse?.documents?.map { Place.of(it) } ?: emptyList(),
-            naverPlaces = naverResponse?.items?.map { Place.of(it) } ?: emptyList(),
-        )
-    }.also {
-        eventPublisher.publishEvent(KeywordCollectEvent(keyword))
-=======
         val (kakaoPlaces, naverPlaces) = getPlaces(kakaoResponse, naverResponse)
 
         mergePlaces(kakaoPlaces = kakaoPlaces, naverPlaces = naverPlaces)
+    }.also {
+        eventPublisher.publishEvent(KeywordCollectEvent(keyword))
     }
 
     private fun getPlaces(kakaoResponse: KakaoPlaceSearchResponse?, naverResponse: NaverPlaceSearchResponse?): Pair<List<Place>, List<Place>> {
@@ -62,7 +56,6 @@ class SearchService(
         }
 
         return Pair(kakaoPlaces, naverPlaces)
->>>>>>> ce6aa1c (feat: Place를 가져오는 로직 개선)
     }
 
     private fun mergePlaces(kakaoPlaces: List<Place>, naverPlaces: List<Place>): List<Place> {
